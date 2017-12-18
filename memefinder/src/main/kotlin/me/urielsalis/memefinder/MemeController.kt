@@ -1,18 +1,13 @@
 package me.urielsalis.memefinder
 
 import org.springframework.web.bind.annotation.RestController
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
 import me.ramswaroop.jbot.core.slack.models.Attachment
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.apache.log4j.spi.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestMapping
-
-
 
 @RestController
 class MemeController {
@@ -57,15 +52,53 @@ class MemeController {
             return RichMessage("Sorry! You're not lucky enough to use our slack command.")
         }
 
-        /** build response  */
-        val richMessage = RichMessage("The is MemeFinder")
-        richMessage.responseType = "in_channel"
-        // set attachments
-        val attachments = arrayOfNulls<Attachment>(1)
-        attachments[0] = Attachment()
-        attachments[0]!!.text = "I will perform all tasks for you."
-        richMessage.attachments = attachments
+        val split = text.split(" ")
+        when {
+            split[0]=="about" -> {
+                val richMessage = RichMessage("Created by Uriel Salischiker (v-usalischiker)")
+                richMessage.responseType = "in_channel"
+                return richMessage.encodedMessage()
+            }
+            split[0]=="search" -> {
+                var returnValue = ""
+                for((key, value) in DB.getDB().entries) {
+                    if(key.contains(join(split).toRegex())) {
+                        returnValue = returnValue + ", " + value
+                    }
+                }
+                return if(returnValue=="") {
+                    RichMessage("Not found :C")
+                } else {
+                    RichMessage(returnValue.substring(1))
+                }
+            }
+            split[0]=="add" -> return if(split.size > 2) {
+                DB.getDB().put(split[1], split[2])
+                DB.commit()
+                RichMessage("Added!")
+            } else {
+                RichMessage("Usage: /memefinder add memename memeurl")
+            }
+            else -> {
+                val richMessage = RichMessage("$userName requested ${split[0]}")
+                richMessage.responseType = "in_channel"
+                richMessage.attachments = arrayOfNulls<Attachment>(1)
+                richMessage.attachments[0] = Attachment()
+                richMessage.attachments[0]!!.imageUrl = DB.getDB()[split[0]]
+                return if(split[0].isBlank()) {
+                    RichMessage("Not found")
+                } else {
+                    richMessage.encodedMessage()
+                }
+            }
+        }
+    }
 
-        return richMessage.encodedMessage() // don't forget to send the encoded message to Slack
+    private fun join(split: List<String>): String {
+        val str = StringBuilder()
+        for(i in (1 until split.size)) {
+            str.append(split[i] + " ")
+        }
+        return str.toString().trim()
     }
 }
