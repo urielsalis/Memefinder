@@ -3,7 +3,6 @@ package me.urielsalis.memefinder
 import org.springframework.web.bind.annotation.RestController
 import me.ramswaroop.jbot.core.slack.models.Attachment
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestMethod
@@ -15,8 +14,7 @@ class MemeController {
      * The token you get while creating a new Slash Command. You
      * should paste the token in application.properties file.
      */
-    @Value("\${slashCommandToken}")
-    private val slackToken: String? = null
+    private val slackToken: String = System.getProperty("ApiKey")
 
 
     /**
@@ -63,7 +61,7 @@ class MemeController {
                 var returnValue = ""
                 for((key, value) in DB.getDB().entries) {
                     if(key.contains(join(split).toRegex())) {
-                        returnValue = returnValue + ", " + value
+                        returnValue = "$returnValue, $key - $value"
                     }
                 }
                 return if(returnValue=="") {
@@ -73,19 +71,24 @@ class MemeController {
                 }
             }
             split[0]=="add" -> return if(split.size > 2) {
-                DB.getDB().put(split[1], split[2])
+                val name = join(split, true)
+                val url = split.last()
+                DB.getDB().put(name, url)
                 DB.commit()
                 RichMessage("Added!")
             } else {
                 RichMessage("Usage: /memefinder add memename memeurl")
             }
             else -> {
-                val richMessage = RichMessage("$userName requested ${split[0]}")
+                val name = join(split)
+                val richMessage = RichMessage("$name - ${DB.getDB()[name]}")
                 richMessage.responseType = "in_channel"
                 richMessage.attachments = arrayOfNulls<Attachment>(1)
                 richMessage.attachments[0] = Attachment()
-                richMessage.attachments[0]!!.imageUrl = DB.getDB()[split[0]]
-                return if(split[0].isBlank()) {
+                richMessage.attachments[0]!!.imageUrl = DB.getDB()[name]
+                richMessage.attachments[0].authorName = userName
+                richMessage.attachments[0].fallback = DB.getDB()[name]
+                return if(DB.getDB()[name].isNullOrBlank()) {
                     RichMessage("Not found")
                 } else {
                     richMessage.encodedMessage()
@@ -94,9 +97,20 @@ class MemeController {
         }
     }
 
-    private fun join(split: List<String>): String {
+    private fun join(split: List<String>, removeLast: Boolean = false): String {
         val str = StringBuilder()
-        for(i in (1 until split.size)) {
+        if(split.size==1) {
+            return split[0]
+        }
+        if(removeLast && split.size==2) {
+            return split[0]
+        }
+        val latest = if(removeLast) {
+            split.size-1
+        } else {
+            split.size
+        }
+        for(i in (1 until latest)) {
             str.append(split[i] + " ")
         }
         return str.toString().trim()
