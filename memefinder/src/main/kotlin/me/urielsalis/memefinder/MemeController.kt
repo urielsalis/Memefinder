@@ -81,7 +81,7 @@ class MemeController {
             }
             else -> {
                 val name = join(split)
-                val richMessage = RichMessage()
+                val richMessage = RichMessage("")
                 richMessage.responseType = "in_channel"
                 richMessage.attachments = arrayOfNulls<Attachment>(1)
                 richMessage.attachments[0] = Attachment()
