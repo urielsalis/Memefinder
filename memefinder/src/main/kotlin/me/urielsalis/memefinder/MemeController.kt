@@ -50,69 +50,19 @@ class MemeController {
             return RichMessage("Sorry! You're not lucky enough to use our slack command.")
         }
 
-        val split = text.split(" ")
-        when {
-            split[0]=="about" -> {
-                val richMessage = RichMessage("Created by Uriel Salischiker (v-usalischiker)")
-                richMessage.responseType = "in_channel"
-                return richMessage.encodedMessage()
-            }
-            split[0]=="search" -> {
-                var returnValue = ""
-                for((key, value) in DB.getDB().entries) {
-                    if(key.contains(join(split).toRegex())) {
-                        returnValue = "$returnValue, $key - $value"
-                    }
-                }
-                return if(returnValue=="") {
-                    RichMessage("Not found :C")
-                } else {
-                    RichMessage(returnValue.substring(1))
-                }
-            }
-            split[0]=="add" -> return if(split.size > 2) {
-                val name = join(split, true)
-                val url = split.last()
-                DB.getDB().put(name, url)
-                DB.commit()
-                RichMessage("Added!")
-            } else {
-                RichMessage("Usage: /memefinder add memename memeurl")
-            }
-            else -> {
-                val name = join(split)
-                val richMessage = RichMessage("")
-                richMessage.responseType = "in_channel"
-                richMessage.attachments = arrayOfNulls<Attachment>(1)
-                richMessage.attachments[0] = Attachment()
-                richMessage.attachments[0]!!.imageUrl = DB.getDB()[name]
-                richMessage.attachments[0].authorName = userName
-                richMessage.attachments[0].fallback = DB.getDB()[name]
-                return if(DB.getDB()[name].isNullOrBlank()) {
-                    RichMessage("Not found")
-                } else {
-                    richMessage.encodedMessage()
-                }
-            }
+        val message = DB.resolve(text, userName)
+        val richMessage = RichMessage(message.text)
+        if(!message.privateMessage) {
+            richMessage.responseType = "in_channel"
         }
+        if(!message.link.isNullOrBlank()) {
+            richMessage.attachments = arrayOfNulls<Attachment>(1)
+            richMessage.attachments[0] = Attachment()
+            richMessage.attachments[0]!!.imageUrl = message.link
+            richMessage.attachments[0].authorName = userName
+            richMessage.attachments[0].fallback = message.link
+        }
+        return richMessage
     }
 
-    private fun join(split: List<String>, removeLast: Boolean = false): String {
-        val str = StringBuilder()
-        if(split.size==1) {
-            return split[0]
-        }
-        if(removeLast && split.size==2) {
-            return split[0]
-        }
-        val latest = if(removeLast) {
-            split.size-1
-        } else {
-            split.size
-        }
-        for(i in (1 until latest)) {
-            str.append(split[i] + " ")
-        }
-        return str.toString().trim()
-    }
 }

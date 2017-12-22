@@ -57,7 +57,12 @@
             <artifactId>mapdb</artifactId>
             <version>3.0.5</version>
         </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>net.dv8tion</groupId>
+			<artifactId>JDA</artifactId>
+			<version>3.4.0_317</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
