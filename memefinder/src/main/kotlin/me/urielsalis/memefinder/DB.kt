@@ -21,6 +21,10 @@ object DB {
         return map
     }
 
+    fun init() {
+        println(jda.status)
+    }
+
     fun commit() {
         db.commit()
     }

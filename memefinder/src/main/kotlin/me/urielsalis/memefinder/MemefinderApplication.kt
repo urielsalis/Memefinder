@@ -8,4 +8,5 @@ class MemefinderApplication
 
 fun main(args: Array<String>) {
     SpringApplication.run(MemefinderApplication::class.java, *args)
+    DB.init()
 }
