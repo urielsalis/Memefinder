@@ -1,6 +1,7 @@
 package me.urielsalis.memefinder
 
 import net.dv8tion.jda.core.MessageBuilder
+import net.dv8tion.jda.core.events.ReadyEvent
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent
 import net.dv8tion.jda.core.hooks.ListenerAdapter
 import org.apache.tomcat.util.http.fileupload.IOUtils
@@ -31,5 +32,9 @@ class Discord: ListenerAdapter() {
                 }
             }
         }
+    }
+
+    override fun onReady(event: ReadyEvent?) {
+        System.out.println("Ready!")
     }
 }
