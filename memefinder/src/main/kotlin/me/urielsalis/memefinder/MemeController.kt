@@ -83,11 +83,6 @@ class MemeController {
                 val name = join(split)
                 val richMessage = RichMessage("$name - ${DB.getDB()[name]}")
                 richMessage.responseType = "in_channel"
-                richMessage.attachments = arrayOfNulls<Attachment>(1)
-                richMessage.attachments[0] = Attachment()
-                richMessage.attachments[0]!!.imageUrl = DB.getDB()[name]
-                richMessage.attachments[0].authorName = userName
-                richMessage.attachments[0].fallback = DB.getDB()[name]
                 return if(DB.getDB()[name].isNullOrBlank()) {
                     RichMessage("Not found")
                 } else {
