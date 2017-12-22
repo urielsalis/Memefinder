@@ -18,6 +18,14 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <name>jcenter-bintray</name>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
+    </repositories>
+
 	<properties>
 		<kotlin.compiler.incremental>true</kotlin.compiler.incremental>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
