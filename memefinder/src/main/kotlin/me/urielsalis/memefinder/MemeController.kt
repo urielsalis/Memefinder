@@ -51,7 +51,7 @@ class MemeController {
             return RichMessage("Sorry! You're not lucky enough to use our slack command.")
         }
 
-        val message = DB.resolve(text, userName)
+        val message = DB.resolve(text, userName, false) ?: return RichMessage("Sorry! You're not lucky enough to use our slack command.")
         val richMessage = RichMessage(message.text)
         if(!message.privateMessage) {
             richMessage.responseType = "in_channel"

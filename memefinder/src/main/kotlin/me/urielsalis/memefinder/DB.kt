@@ -27,10 +27,14 @@ object DB {
         db.commit()
     }
 
-    fun resolve(text: String, username: String): Message {
+    fun resolve(text: String, username: String, isDiscord: Boolean): Message? {
         var split = text.split(" ")
-        if(split[0] == "/memefinder") {
-            split = split.subList(1, split.size)
+        if(isDiscord) {
+            if(split[0] == "/memefinder") {
+                split = split.subList(1, split.size)
+            } else {
+                return null
+            }
         }
         when {
             split[0]=="about" -> {

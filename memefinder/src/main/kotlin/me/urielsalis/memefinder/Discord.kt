@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter
 class Discord: ListenerAdapter() {
     override fun onMessageReceived(event: MessageReceivedEvent?) {
         if(event!=null) {
-            val message = DB.resolve(event.message.contentDisplay, event.author.name)
+            val message = DB.resolve(event.message.contentDisplay, event.author.name, true) ?: return
 
             if(!message.link.isBlank()) {
                 event.textChannel.sendMessage(message.link).queue()
