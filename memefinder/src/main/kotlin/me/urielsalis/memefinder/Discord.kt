@@ -14,7 +14,7 @@ class Discord: ListenerAdapter() {
                 event.textChannel.sendMessage(message.link).queue()
             } else {
                 if(message.privateMessage) {
-                    event.author.openPrivateChannel().queue({it.sendMessage(message.text)})
+                    event.textChannel.sendMessage(message.text).queue()
                 } else {
                     event.textChannel.sendMessage(message.text).queue()
                 }
