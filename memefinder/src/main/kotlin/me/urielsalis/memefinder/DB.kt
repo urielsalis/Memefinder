@@ -1,9 +1,6 @@
 package me.urielsalis.memefinder
 
-import me.ramswaroop.jbot.core.slack.models.Attachment
-import me.ramswaroop.jbot.core.slack.models.RichMessage
 import net.dv8tion.jda.core.AccountType
-import net.dv8tion.jda.core.JDA
 import net.dv8tion.jda.core.JDABuilder
 import org.mapdb.DB
 import org.mapdb.DBMaker

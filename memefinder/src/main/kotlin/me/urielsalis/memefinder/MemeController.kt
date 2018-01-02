@@ -1,12 +1,13 @@
 package me.urielsalis.memefinder
 
-import org.springframework.web.bind.annotation.RestController
 import me.ramswaroop.jbot.core.slack.models.Attachment
+import me.ramswaroop.jbot.core.slack.models.Message
 import me.ramswaroop.jbot.core.slack.models.RichMessage
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class MemeController {
