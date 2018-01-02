@@ -11,12 +11,12 @@ class Discord: ListenerAdapter() {
             val message = DB.resolve(event.message.contentDisplay, event.author.name)
 
             if(!message.link.isBlank()) {
-                event.textChannel.sendMessage(message.link)
+                event.textChannel.sendMessage(message.link).queue()
             } else {
                 if(message.privateMessage) {
-                    event.author.openPrivateChannel().queue({priv -> priv.sendMessage(message.text)})
+                    event.author.openPrivateChannel().queue({it.sendMessage(message.text)})
                 } else {
-                    event.textChannel.sendMessage(message.text)
+                    event.textChannel.sendMessage(message.text).queue()
                 }
             }
         }
