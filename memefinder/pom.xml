@@ -55,21 +55,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>me.ramswaroop.jbot</groupId>
-			<artifactId>jbot</artifactId>
-			<version>3.0.2</version>
-		</dependency>
         <dependency>
             <groupId>org.mapdb</groupId>
             <artifactId>mapdb</artifactId>
             <version>3.0.5</version>
         </dependency>
 		<dependency>
-			<groupId>net.dv8tion</groupId>
-			<artifactId>JDA</artifactId>
-			<version>3.4.0_317</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20170516</version>
 		</dependency>
+
 	</dependencies>
 
 	<build>

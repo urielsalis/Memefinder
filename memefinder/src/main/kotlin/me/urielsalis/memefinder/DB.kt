@@ -15,7 +15,7 @@ object DB {
     val map: ConcurrentMap<String, String> = db
             .hashMap("map", Serializer.STRING, Serializer.STRING)
             .createOrOpen()
-    val jda: JDA = JDABuilder(AccountType.BOT).setToken(System.getProperty("Token")).addEventListener(Discord()).buildBlocking()
+    val jda = JDABuilder(AccountType.BOT).setToken(System.getProperty("Token")).addEventListener(Discord()).buildAsync()
 
     fun getDB(): ConcurrentMap<String, String> {
         return map
@@ -23,6 +23,7 @@ object DB {
 
     fun init() {
         println(jda.status)
+
     }
 
     fun commit() {
@@ -30,7 +31,10 @@ object DB {
     }
 
     fun resolve(text: String, username: String): Message {
-        val split = text.split(" ")
+        var split = text.split(" ")
+        if(split[0] == "/memefinder") {
+            split = split.subList(1, split.size)
+        }
         when {
             split[0]=="about" -> {
                 return Message("", "Created by Uriel Salischiker (v-usalischiker)", false)
@@ -48,21 +52,23 @@ object DB {
                     Message("", returnValue.substring(1), true)
                 }
             }
-            split[0]=="add" -> return if(split.size > 2) {
-                val name = join(split, true)
-                val url = split.last()
-                getDB().put(name, url)
-                commit()
-                return Message("", "Added!", true)
-            } else {
-                return Message("", "Usage: /memefinder add memename memeurl", true)
+            split[0]=="add" -> {
+                if (split.size > 2) {
+                    val name = join(split, true)
+                    val url = split.last()
+                    getDB().put(name, url)
+                    commit()
+                    return Message("", "Added!", true)
+                } else {
+                    return Message("", "Usage: /memefinder add memename memeurl", true)
+                }
             }
             else -> {
                 val name = join(split)
                 return if(getDB()[name].isNullOrBlank()) {
                     Message("", "Not found", true)
                 } else {
-                    Message(getDB()[name]!!, "", false)
+                    Message(getDB()[name]!!, "Result: ", false)
                 }
             }
         }
