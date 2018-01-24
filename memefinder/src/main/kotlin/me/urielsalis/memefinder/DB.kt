@@ -54,14 +54,23 @@ object DB {
                 }
             }
             split[0]=="add" -> {
-                if (split.size > 2) {
+                return if (split.size > 2) {
                     val name = join(split, true)
                     val url = split.last()
                     getDB().put(name, url)
                     commit()
-                    return Message("", "Added!", true)
+                    Message("", "Added!", true)
                 } else {
-                    return Message("", "Usage: /memefinder add memename memeurl", true)
+                    Message("", "Usage: /memefinder add memename memeurl", true)
+                }
+            }
+            split[0]=="list" -> {
+                var returnValue = ""
+                me.urielsalis.memefinder.DB.getDB().entries.forEach { (key, value) -> returnValue = "$returnValue, $key - $value" }
+                return if(returnValue=="") {
+                    Message("", "Not found", true)
+                } else {
+                    Message("", returnValue.substring(1), true)
                 }
             }
             else -> {
